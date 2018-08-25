@@ -37,7 +37,7 @@
             this.labelNaming = new System.Windows.Forms.Label();
             this.comboBoxNaming = new System.Windows.Forms.ComboBox();
             this.buttonClose = new System.Windows.Forms.Button();
-            this.buttonRename = new System.Windows.Forms.Button();
+            this.buttonProcess = new System.Windows.Forms.Button();
             this.checkBoxTags = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -119,16 +119,16 @@
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
-            // buttonRename
+            // buttonProcess
             // 
-            this.buttonRename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRename.Location = new System.Drawing.Point(216, 199);
-            this.buttonRename.Name = "buttonRename";
-            this.buttonRename.Size = new System.Drawing.Size(75, 25);
-            this.buttonRename.TabIndex = 8;
-            this.buttonRename.Text = "Rename";
-            this.buttonRename.UseVisualStyleBackColor = true;
-            this.buttonRename.Click += new System.EventHandler(this.buttonRename_Click);
+            this.buttonProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonProcess.Location = new System.Drawing.Point(216, 199);
+            this.buttonProcess.Name = "buttonProcess";
+            this.buttonProcess.Size = new System.Drawing.Size(75, 25);
+            this.buttonProcess.TabIndex = 8;
+            this.buttonProcess.Text = "Process";
+            this.buttonProcess.UseVisualStyleBackColor = true;
+            this.buttonProcess.Click += new System.EventHandler(this.buttonRename_Click);
             // 
             // checkBoxTags
             // 
@@ -155,7 +155,7 @@
             this.Controls.Add(this.labelNaming);
             this.Controls.Add(this.comboBoxNaming);
             this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.buttonRename);
+            this.Controls.Add(this.buttonProcess);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
@@ -176,7 +176,7 @@
         private System.Windows.Forms.Label labelNaming;
         private System.Windows.Forms.ComboBox comboBoxNaming;
         private System.Windows.Forms.Button buttonClose;
-        private System.Windows.Forms.Button buttonRename;
+        private System.Windows.Forms.Button buttonProcess;
         private System.Windows.Forms.CheckBox checkBoxTags;
     }
 }

@@ -19,6 +19,8 @@ namespace MusicCleaner
 
             switch (caseType)
             {
+                case CaseType.Unchanged:
+                    break;
                 case CaseType.CamelCase:
                     newName = newName.ToCamel();
                     break;

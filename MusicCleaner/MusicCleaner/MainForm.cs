@@ -22,6 +22,7 @@ namespace MusicCleaner
 
             MinimumSize = new Size(300, 275);
 
+            comboBoxNaming.Items.Add(CaseType.Unchanged);
             comboBoxNaming.Items.Add(CaseType.CamelCase);
             comboBoxNaming.Items.Add(CaseType.LowerCase);
             comboBoxNaming.Items.Add(CaseType.UpperCase);
