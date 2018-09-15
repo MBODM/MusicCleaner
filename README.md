@@ -1,5 +1,5 @@
 # MusicCleaner
-A small WinForms application to streamline my MP3 files.
+A small WinForms application to streamline my MP3 files via renaming and retagging.
 #### Screenshot:
 ![alt text](https://github.com/MBODM/MusicCleaner/blob/master/SCREENSHOT.png)
 #### License infos:
