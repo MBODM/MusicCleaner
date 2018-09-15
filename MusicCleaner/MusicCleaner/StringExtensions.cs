@@ -47,7 +47,19 @@ namespace MusicCleaner
 
             foreach (var part in parts)
             {
-                sb.Append(FirstCharToUpper(part));
+                var temp = part.Trim();
+
+                if (temp != "-")
+                {
+                    temp = FirstCharToUpper(temp);
+
+                    if (temp.Contains('-') && temp.Length >= 3)
+                    {
+                        temp = ScoreHandling(temp);
+                    }
+                }
+
+                sb.Append(temp);
                 sb.Append(' ');
             }
 
@@ -67,6 +79,18 @@ namespace MusicCleaner
             }
 
             return s.First().ToString().ToUpper() + s.Substring(1);
+        }
+
+        private static string ScoreHandling(string s)
+        {
+            if (s.Count(x => x == '-') > 1)
+            {
+                throw new InvalidOperationException("More than one score character in one filename part is not allowed.");
+            }
+
+            var parts = s.Trim().Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return parts.First() + "-" + FirstCharToUpper(parts.Last());
         }
     }
 }

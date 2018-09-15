@@ -32,12 +32,11 @@ namespace MusicCleaner
                     break;
             }
 
-            var newFile = Path.Combine(Path.GetDirectoryName(file), Path.ChangeExtension(newName, ext.ToLower()));
+            var newFile = Path.Combine(Path.GetDirectoryName(file), newName + ext.ToLower());
+            var tmpFile = Path.Combine(Path.GetDirectoryName(file), newName + ".tmp");
 
             if (newFile != file)
             {
-                var tmpFile = Path.Combine(Path.GetDirectoryName(file), Path.ChangeExtension(newName, ".tmp"));
-
                 File.Move(file, tmpFile);
                 File.Move(tmpFile, newFile);
             }

@@ -13,7 +13,7 @@ namespace MusicCleaner
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(new CaseChanger(), new TagChanger()));
+            Application.Run(new MainForm());
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -8,26 +9,25 @@ namespace MusicCleaner
 {
     public partial class MainForm : Form
     {
-        private readonly ICaseChanger caseChanger;
-        private readonly ITagChanger tagChanger;
+        private readonly BusinessLogic businessLogic;
+        private readonly OptionsWrapper optionsWrapper;
 
-        public MainForm(ICaseChanger caseChanger, ITagChanger tagChanger)
+        public MainForm()
         {
-            this.caseChanger = caseChanger ?? throw new ArgumentNullException(nameof(caseChanger));
-            this.tagChanger = tagChanger ?? throw new ArgumentNullException(nameof(tagChanger));
-
             InitializeComponent();
 
-            Text += " " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Text = "MusicCleaner " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            MinimumSize = new Size(300, 275);
+            MinimumSize = new Size(Width, Height);
 
-            comboBoxNaming.Items.Add(CaseType.Unchanged);
-            comboBoxNaming.Items.Add(CaseType.CamelCase);
-            comboBoxNaming.Items.Add(CaseType.LowerCase);
-            comboBoxNaming.Items.Add(CaseType.UpperCase);
+            comboBoxRenaming.Items.Add(CaseType.Unchanged);
+            comboBoxRenaming.Items.Add(CaseType.CamelCase);
+            comboBoxRenaming.Items.Add(CaseType.LowerCase);
+            comboBoxRenaming.Items.Add(CaseType.UpperCase);
+            comboBoxRenaming.SelectedIndex = 0;
 
-            comboBoxNaming.SelectedIndex = 0;
+            businessLogic = new BusinessLogic(new CaseChanger(), new TagChanger());
+            optionsWrapper = new OptionsWrapper(checkedListBoxOptions);
         }
 
         private void buttonFolder_Click(object sender, EventArgs e)
@@ -43,7 +43,7 @@ namespace MusicCleaner
             }
         }
 
-        private void buttonRename_Click(object sender, EventArgs e)
+        private async void buttonProcess_Click(object sender, EventArgs e)
         {
             var folder = textBoxFolder.Text;
 
@@ -59,39 +59,57 @@ namespace MusicCleaner
                 return;
             }
 
-            var files = Directory.GetFiles(folder, "*.mp3", SearchOption.AllDirectories);
+            SetControls(false);
 
-            progressBarFiles.Maximum = files.Length;
-            progressBarFiles.Minimum = 0;
-            progressBarFiles.Value = 0;
-            progressBarFiles.Step = 1;
+            var files = Directory.GetFiles(folder, "*.mp3", optionsWrapper.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
-            var caseType = (CaseType)comboBoxNaming.SelectedItem;
+            progressBarProgress.Maximum = files.Length;
+            progressBarProgress.Minimum = 0;
+            progressBarProgress.Value = 0;
+            progressBarProgress.Step = 1;
 
-            foreach (var file in files)
+            var caseType = (CaseType)comboBoxRenaming.SelectedItem;
+
+            var progress = new Progress<string>(x => progressBarProgress.PerformStep());
+
+            try
             {
-                var newFile = caseChanger.ChangeCase(file, caseType);
-
-                if (checkBoxTags.Checked)
-                {
-                    try
-                    {
-                        tagChanger.ChangeTags(newFile);
-                    }
-                    catch (InvalidOperationException exception)
-                    {
-                        ShowError(exception.Message);
-                        return;
-                    }
-                }
-
-                progressBarFiles.PerformStep();
+                await businessLogic.Process(files.AsEnumerable(), caseType, optionsWrapper.CreateTags, optionsWrapper.AlbumMode, progress);
             }
+            catch (Exception exception)
+            {
+                ShowError(exception.Message);
+                return;
+            }
+            finally
+            {
+                SetControls(true);
+            }
+
+            ShowInfo("Successfully finished.");
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void SetControls(bool enabled)
+        {
+            buttonFolder.Enabled = enabled;
+            labelFolder.Enabled = enabled;
+            textBoxFolder.Enabled = enabled;
+            labelRenaming.Enabled = enabled;
+            comboBoxRenaming.Enabled = enabled;
+            labelOptions.Enabled = enabled;
+            checkedListBoxOptions.Enabled = enabled;
+            buttonProcess.Enabled = enabled;
+            buttonClose.Enabled = enabled;
+        }
+
+        private void ShowInfo(string text)
+        {
+            MessageBox.Show(text, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ShowError(string text)
